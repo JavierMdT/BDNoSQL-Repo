@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  redis-master:
+    image: redis:7
+    hostname: redis-master
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis-master.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - redis-net
+
+  redis-replica1:
+    image: redis:7
+    hostname: redis-replica1
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis-replica.conf:/usr/local/etc/redis/redis.conf  
+    networks:
+      - redis-net
+
+  redis-replica2:
+    image: redis:7
+    hostname: redis-replica2
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis-replica.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - redis-net
+
+  redis-replica3:
+    image: redis:7
+    hostname: redis-replica3
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis-replica.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - redis-net
+
+  sentinel1:
+    image: redis:7
+    hostname: sentinel1
+    command: sh -c "sleep 5 && redis-sentinel /usr/local/etc/redis/sentinel.conf"
+    volumes:
+      - ./sentinel.conf:/usr/local/etc/redis/sentinel.conf
+    ports:
+      - "26379:26379"
+    depends_on:
+      redis-master:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - redis-net
+
+  sentinel2:
+    image: redis:7
+    hostname: sentinel2
+    command: sh -c "sleep 5 && redis-sentinel /usr/local/etc/redis/sentinel.conf"
+    volumes:
+      - ./sentinel.conf:/usr/local/etc/redis/sentinel.conf
+    ports:
+      - "26380:26379"
+    depends_on:
+      redis-master:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - redis-net
+
+  sentinel3:
+    image: redis:7
+    hostname: sentinel3
+    command: sh -c "sleep 5 && redis-sentinel /usr/local/etc/redis/sentinel.conf"
+    volumes:
+      - ./sentinel.conf:/usr/local/etc/redis/sentinel.conf
+    ports:
+      - "26381:26379"
+    depends_on:
+      redis-master:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - redis-net
+
+networks:
+  redis-net:
+    driver: bridge
