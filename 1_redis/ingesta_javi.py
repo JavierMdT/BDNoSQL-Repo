@@ -1,5 +1,3 @@
-# Fichero python para la ingesta de datos de redis 
-
 ##################### Conexion a redis #####################
 import redis as r
 REDIS_PORT = 6379
@@ -15,7 +13,7 @@ r.flushall()
 '''
 Tipo de dato: Sorted list (zset) -> (nombre, prioridad)
 Ejemplo:
-    - [(Alberto, 20),(Marta, 30),(Pepe, 10)]
+    - cola_X : [(Alberto, 20),(Marta, 30),(Pepe, 10)]
 '''
 
 # Lista de nombres 
@@ -25,20 +23,30 @@ nombres = [
     "Alejandro", "Lucía", "Andrés", "Mariana", "Javier"
 ]
 
-# Zonas
-zonas = ["A","B"]
+# Departamentos
+departamentos_hospital = [
+    "PEDIATRIA",
+    "CARDIOLOGIA",
+    "OFTALMOLOGIA",
+    "NEUROLOGIA",
+    "ONCOLOGIA",
+    "TRAUMATOLOGIA"
+]
 
-# Insercion de 3 colas
-# Formato de nombre de sala: EDIFICIO:PLANTAZONA:NUMERO_SALA
+
+# Insercion de 5 colas
+# Formato de clave de cola: EDIFICIO:DEPARTAMENTO
+# Rango de prioridad: [0, 100]
 colas_pacientes = []
 import random
 for idx in range(5):
-    nombre_cola = f"ED_{random.randint(0, 3)}:PL_{random.randint(-1, 5)}-{zonas[random.randint(0, 1)]}:SALA_{random.randint(0, 60)}"
+    nombre_cola = f"ED-{random.randint(0,4)}:DEP-{departamentos_hospital[random.randint(0,5)]}"
     colas_pacientes.append(nombre_cola)
-    # Metemos 5 pacientes
-    for i in range(5):
+    # Metemos 5 pacientes 
+    sample = random.sample(nombres,8)
+    for i in range(8):
         r.zadd(nombre_cola,
-            {nombres[random.randint(0, 14)]:random.randint(0, 100)})
+            {sample[i]:random.randint(0, 100)})
         
 
     
