@@ -9,7 +9,7 @@ r = r.Redis(host='localhost',
 r.flushall()
 ############################################################
 
-# * Colas de espera pacientes 
+# * Colas de espera pacientes *
 '''
 Tipo de dato: Sorted list (zset) -> (nombre, prioridad)
 Ejemplo:
@@ -40,7 +40,7 @@ departamentos_hospital = [
 colas_pacientes = []
 import random
 for idx in range(5):
-    nombre_cola = f"ED-{random.randint(0,4)}:DEP-{departamentos_hospital[random.randint(0,5)]}"
+    nombre_cola = f"ED-{random.randint(0,5)}:DEP-{departamentos_hospital[random.randint(0,5)]}"
     colas_pacientes.append(nombre_cola)
     # Metemos 5 pacientes 
     sample = random.sample(nombres,8)
@@ -50,3 +50,13 @@ for idx in range(5):
         
 
     
+
+# * Alertas de sala *
+'''
+Tipo de dato: Pub/Sub -> (nombre, prioridad)
+Ejemplo:
+    - alerta_x : mensaje
+'''
+ 
+# **NOTA** -> Por ser algo dinamico, se realizara directamente en consultas.ipynb
+
