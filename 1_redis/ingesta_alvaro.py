@@ -61,7 +61,7 @@ try:
     # Usamos el cliente .json() de la librería de redis-py
     
     # La clave sigue el patrón: info:id
-    KEY_PREFIX = "hospital:madrid:empleado"
+    KEY_PREFIX = "empleados"
     
     count = 0
     for emp_id, data in empleados_data.items():
