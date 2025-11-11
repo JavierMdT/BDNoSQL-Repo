@@ -60,7 +60,7 @@ try:
     # --- Inserción de Datos con JSON.SET ---
     # Usamos el cliente .json() de la librería de redis-py
     
-    # La clave sigue el patrón: hospital:ubicacion:entidad:id
+    # La clave sigue el patrón: info:id
     KEY_PREFIX = "hospital:madrid:empleado"
     
     count = 0
