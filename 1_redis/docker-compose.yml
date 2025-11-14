@@ -1,6 +1,6 @@
 services:
   redis-master:
-    image: redis:7
+    image: redis/redis-stack-server:latest
     hostname: redis-master
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
@@ -13,10 +13,11 @@ services:
       timeout: 3s
       retries: 5
     networks:
-      - redis-net
+      redis-net:
+        ipv4_address: 172.25.0.10
 
   redis-replica1:
-    image: redis:7
+    image: redis/redis-stack-server:latest
     hostname: redis-replica1
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
@@ -24,10 +25,11 @@ services:
     ports:
       - "6380:6379"
     networks:
-      - redis-net
+      redis-net:
+        ipv4_address: 172.25.0.11
 
   redis-replica2:
-    image: redis:7
+    image: redis/redis-stack-server:latest
     hostname: redis-replica2
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
@@ -35,10 +37,11 @@ services:
     ports:
       - "6381:6379"
     networks:
-      - redis-net
+      redis-net:
+        ipv4_address: 172.25.0.12
 
   redis-replica3:
-    image: redis:7
+    image: redis/redis-stack-server:latest
     hostname: redis-replica3
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
@@ -46,7 +49,8 @@ services:
     ports:
       - "6382:6379"
     networks:
-      - redis-net
+      redis-net:
+        ipv4_address: 172.25.0.13
 
   sentinel1:
     image: redis:7
@@ -104,3 +108,7 @@ services:
 networks:
   redis-net:
     driver: bridge
+    ipam:
+      config:
+      - subnet: 172.25.0.0/24 # Definir la subred
+        gateway: 172.25.0.1 # Definir el gateway 
