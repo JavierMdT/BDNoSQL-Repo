@@ -26,3 +26,9 @@ r.flushall()
 ############################################################
 
 
+# * Datos geograficos hospitales *
+'''
+Tipo de dato: GEO --> (nombre, geohash)
+Ejemplo:
+    - Lugares : [(Torre_Eiffel, u4dru), ...]
+'''
