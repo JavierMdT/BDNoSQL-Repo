@@ -33,7 +33,7 @@ r = redis.Redis(host='localhost',
                 port=MASTER_PORT,
                 decode_responses=True)
 
-print(f"Contenedor actual actuando como master: {ip_network}")
+print(f"[INFO] Correcta conexion a la base de datos\n[INFO] Contenedor actual actuando como master: {ip_network}")
 
 # Limpiar la base de datos en caso de que quede algo
 r.flushall()
