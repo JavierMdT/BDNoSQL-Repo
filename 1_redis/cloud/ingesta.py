@@ -10,7 +10,6 @@ with open("access.toml", "rb") as f:
 user = access_dict["user"]
 password = access_dict["pass"]
 
-
 r = redis.Redis(
     host='redis-18235.c339.eu-west-3-1.ec2.cloud.redislabs.com',
     port=18235,
@@ -29,9 +28,9 @@ r.flushall()
 # * Datos geograficos hospitales *
 '''
 Tipo: GEO --> (nombre, geohash)
-Clave: "Hospitales"
+Clave: "hospitales"
 Ejemplo:
-    - Hospitales: [(nombre1, u4dru), ...]
+    - hospitales: [(nombre1, u4dru), ...]
 '''
 
 # Hospitales
@@ -61,3 +60,39 @@ for partial_id in range(5):
 
 r.geoadd(name="hospitales",
          values=datos)
+
+
+# * Beneficios netos a lo largo de los meses *
+
+'''
+Tipo: time series --> ([timestamp1, timestamp2, ...], [value1, value2, ...])
+Clave: beneficios_año
+Ejemplo:
+    - beneficios_2024: ([...], [...])
+'''
+
+# Generar timestamps de ejemplo que representen los 12 meses de 2024
+from datetime import datetime
+YEAR = 2024
+timestamps_ms = []
+for month in range(1, 13):
+    dt_obj = datetime(YEAR, month, 1)
+    ts_ms = int(dt_obj.timestamp() * 1000)
+    timestamps_ms.append(ts_ms)
+
+# Valores asociados a los timestamps
+# Se generaran asumiendo que son variables gaussianas de media 12millones y desviacion tipica medio millon 
+import numpy as np
+MEAN = 12 * 10**6
+STD = 5 * 10**5
+N_SAMPLES = 12
+
+values = np.random.normal(loc=MEAN,
+                          scale=STD,
+                          size=N_SAMPLES).astype(float).tolist()
+
+# Creamos un pipeline para meter los datos de forma mas eficiente
+pipe = r.pipeline()
+for ts_ms, val in zip(timestamps_ms, values):
+    pipe.ts().add("beneficios_2024", ts_ms, val)
+pipe.execute()
