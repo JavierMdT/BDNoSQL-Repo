@@ -73,7 +73,7 @@ try:
 
     print(f"¡Éxito! Se han insertado {count} empleados en la DB=2.")
 
-except redis.exceptions.ConnectionError as e:
-    print(f"Error de conexión: {e}")
+except redis.exceptions.ConnectionError as e: #type:ignore
+    print(f"[ERROR] Error de conexión: {e}")
 except Exception as e:
-    print(f"Ocurrió un error: {e}")
+    print(f"[ERROR] Ocurrió un error: {e}")
