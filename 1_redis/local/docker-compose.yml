@@ -104,7 +104,8 @@ services:
       restart: "no" 
       networks:
         - redis-net
-
+      volumes:
+        - ./logs_failover:/usr/src/app/logs
 networks:
   redis-net:
     driver: bridge
