@@ -40,8 +40,6 @@ r.flushall()
 ############################################################
 
 
-
-
 # * Colas de espera pacientes *
 '''
 Tipo de dato: Sorted list (zset) -> (nombre, prioridad)
@@ -92,4 +90,69 @@ Ejemplo:
 '''
  
 # **NOTA** -> Por ser algo dinamico, se realizara directamente en consultas.ipynb
+
+
+
+# * Datos empleado *
+'''
+Tipo de dato: Json 
+Clave: empleado:id
+Ejemplo:
+    - empleado:1234 : mensaje
+'''
+
+r.select(2)
+
+# Datos empleado
+empleados_data = {
+    "1234": {
+        "nombre": "Dra. Elena Torres",
+        "edad": 45,
+        "sexo": "Femenino",
+        "puesto": "Cirujana Jefa",
+        "salario": 85000,
+        "departamento": "Cirugía",
+        "sala_asignada": "Quirófano 1"
+    },
+    "1235": {
+        "nombre": "Enfermero Carlos Ruiz",
+        "edad": 32,
+        "sexo": "Masculino",
+        "puesto": "Enfermero UCI",
+        "salario": 42000,
+        "departamento": "Cuidados Intensivos",
+        "sala_asignada": "UCI Planta 4"
+    },
+    "1236": {
+        "nombre": "Dr. Miguel López",
+        "edad": 51,
+        "sexo": "Masculino",
+        "puesto": "Cardiólogo",
+        "salario": 78000,
+        "departamento": "Cardiología",
+        "sala_asignada": "Consultas Externas 3"
+    },
+    "1237": {
+        "nombre": "Administrativa Sara Góméz",
+        "edad": 28,
+        "sexo": "Femenino",
+        "puesto": "Gestión de Pacientes",
+        "salario": 31000,
+        "departamento": "Administración",
+        "sala_asignada": "Recepción Principal"
+    }
+}
+
+count = 0
+for emp_id, data in empleados_data.items():
+    key = f"{"empleado"}:{emp_id}"
+    # Usamos JSON.SET para guardar el diccionario completo en la raíz ($)
+    # [cite: 2133]
+    r.json().set(key, '$', data)
+    count += 1
+
+
+
+
+
 
