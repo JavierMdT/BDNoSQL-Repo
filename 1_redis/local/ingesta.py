@@ -2,6 +2,7 @@
 import redis 
 from redis.sentinel import Sentinel
 from typing import Tuple, Any
+import time
 
 # Lista de Sentinels
 SENTINELS = [
@@ -9,11 +10,6 @@ SENTINELS = [
     ('localhost', 26380),
     ('localhost', 26381)
 ]
-
-# Creamos el objeto sentiels y vemos quien es el maestro 
-GROUP_NAME = 'mymaster'  
-sentinel = Sentinel(SENTINELS, socket_timeout=0.5, retry_on_timeout=True)
-ip_network, port_network = sentinel.discover_master(GROUP_NAME)
 
 '''
 Diccionario de traduccion de ip de la subred.
@@ -24,20 +20,56 @@ traduccion = {
     "redis-master": 6379,
     "redis-replica1": 6380,
     "redis-replica2": 6381,
-    "redis-replica3": 6382
+    "redis-replica3": 6382,
+    "172.25.0.10": 6379,
+    "172.25.0.11": 6380,
+    "172.25.0.12": 6381,
+    "172.25.0.13": 6382
 }
 
-MASTER_PORT = traduccion[ip_network]
+'''
+Diccionario de traduccion de ip de la subred.
+Uso:
+    - traduccion[ip_subred] = nombre_contenedor
+'''
+traduccion_2 = {
+    "172.25.0.10": "redis-master",
+    "redis-master": "redis-master",
+    "172.25.0.11": "replica-1",
+    "172.25.0.12": "replica-2",
+    "172.25.0.13": "replica-3"
+}
 
-r = redis.Redis(host='localhost',
-                port=MASTER_PORT,
-                decode_responses=True)
+# Creamos el objeto sentiels y vemos quien es el maestro 
+GROUP_NAME = 'mymaster'  
+sentinel = Sentinel(SENTINELS, socket_timeout=0.5, retry_on_timeout=True)
 
-print(f"[INFO] Correcta conexion a la base de datos\n[INFO] Contenedor actual actuando como master: {ip_network}")
 
-# Limpiar la base de datos en caso de que quede algo
-r.flushall()
-############################################################
+while True:
+    try:
+        ip_network, port_network = sentinel.discover_master(GROUP_NAME)
+        MASTER_PORT = traduccion[ip_network]
+
+        r = redis.Redis(host='localhost',
+                        port=MASTER_PORT,
+                        decode_responses=True)
+
+
+        # Limpiar la base de datos en caso de que quede algo
+        r.flushall()
+        print(f"[INFO] Correcta conexion a la base de datos\n[INFO] Contenedor actual actuando como master: {traduccion_2[ip_network]}")
+        break
+        ############################################################
+        
+    except EOFError or KeyboardInterrupt:
+        print("Intento de conexion interrumpida manualmente.")
+        exit(1)
+    except Exception as e:
+        print(f"[INFO] Ha ocurrido un error:\n"
+              f"{e}\n"
+              f"[INFO] Reintentando conexion...\n")
+        time.sleep(2)
+
 
 
 # * Colas de espera pacientes *
@@ -90,7 +122,6 @@ Ejemplo:
 '''
  
 # **NOTA** -> Por ser algo dinamico, se realizara directamente en consultas.ipynb
-
 
 
 # * Datos empleado *

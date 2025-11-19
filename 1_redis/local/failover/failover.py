@@ -3,6 +3,8 @@ from redis.sentinel import Sentinel
 from redis.exceptions import ConnectionError, TimeoutError
 import os
 from redis import Redis
+import logging 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename="./logs/info.logs")
 
 # Lista de Sentinels
 SENTINELS = [
@@ -28,7 +30,7 @@ def main():
             if (ip, port) != (master_ip, master_port):
                 # Actualizamos la info del master
                 master_ip, master_port = ip, port
-                print(f"[INFO] Nuevo maestro detectado: {master_ip}:{master_port}")
+                logging.info(f"[INFO] Nuevo maestro detectado: {master_ip}:{master_port}")
                 
                 # Creamos el nuevo master 
                 master = Redis(host=ip, port=port, socket_timeout=0.5)
@@ -36,13 +38,13 @@ def main():
             # Intentamos hacer ping
             pong = master.ping()
             if pong:
-                print(f"[PING] Maestro {master_ip}:{master_port} responde correctamente.")
+                logging.info(f"[PING] Maestro {master_ip}:{master_port} responde correctamente.")
             else:
-                print(f"[WARN] Maestro {master_ip}:{master_port} no responde, Sentinel realizará failover.")
+                logging.warning(f"[WARN] Maestro {master_ip}:{master_port} no responde, Sentinel realizará failover.")
             
         except (ConnectionError, TimeoutError) as e:
-            print(f"[ERROR] No se pudo conectar al maestro: {e}")
-            print("[INFO] Esperando Sentinel para promover nuevo maestro...")
+            logging.error(f"[ERROR] No se pudo conectar al maestro: {e}")
+            logging.info("[INFO] Esperando Sentinel para promover nuevo maestro...")
         
         # Esperamos antes del próximo ping
         time.sleep(PING_INTERVAL)

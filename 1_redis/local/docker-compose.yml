@@ -101,6 +101,7 @@ services:
       build: 
         context: ./failover
         dockerfile: failover_dockerfile
+      command: python /usr/src/app/failover.py
       restart: "no" 
       networks:
         - redis-net
