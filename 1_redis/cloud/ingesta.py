@@ -103,6 +103,49 @@ try:
             
     pipe.execute()
 
+        
+        
+    # * Datos hospitales *
+    '''
+    Tipo de dato: hash -> (x: (...), y:(...))
+    Clave: datos_hosp_X
+    Ejemplo:
+        - datos_hosp_X : (nombre:"Hospital X", ciudad="ciudad_X" ,salas_cardiologia:X, ...)
+    '''
+    
+    hospitales = [
+        "Clinica del Sol Naciente",
+        "Hospital Sierra Vista",
+        "Centro Medico Aurora",
+        "Sanatorio Nido de Paz",
+        "Hospital General Fenix"
+    ]
+    
+    localizaciones = [
+        "Puerta del Sol", 
+        "Barrio de Fuencarral",  
+        "Casa de Campo", 
+        "Barrio de Vallecas",  
+        "Barrio de Salamanca"  
+    ]
+    
+    # Introducimos datos de hospitales 
+    import random
+    for i, h in enumerate(hospitales):
+        r.hset(f"datos_hosp_{i}", mapping={
+            'nombre': h,
+            'localizacion': localizaciones[i],
+            "cardiologia":random.randint(0, 10),
+            "oftalmologia":random.randint(0, 10),
+            "pediatria":random.randint(0, 10),
+            "ginecologia":random.randint(0, 10),
+            "urologia":random.randint(0, 10),
+            "traumatologia":random.randint(0, 10),
+            "reumatologia":random.randint(0, 10),
+            "oncologia":random.randint(0, 10)
+        })
+    
+
 except redis.exceptions.ConnectionError as e: #type:ignore
     print(f"[ERROR] Error de conexión: {e}")
 except Exception as e:

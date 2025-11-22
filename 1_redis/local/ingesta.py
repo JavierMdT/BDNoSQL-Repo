@@ -183,6 +183,14 @@ for emp_id, data in empleados_data.items():
     count += 1
 
 
+# * Datos hospitales *
+'''
+Tipo de dato: hash -> (x: (...), y:(...))
+Clave: datos_hospX
+Ejemplo:
+    - datos_hospX : (nombre:"Hospital X", ciudad="ciudad_X" ,salas_cardiologia:X, ...)
+'''
+
 
 
 
