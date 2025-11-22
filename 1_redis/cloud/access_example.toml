@@ -1,3 +1,5 @@
 # Here you must change the examples for your user and password 
+# Viewer conexion: 
+# user="viewer" | pass="Viewer123?"
 user="user_example"
 pass="pass_example"
