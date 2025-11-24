@@ -1,4 +1,4 @@
-# Here you must change the examples for your user and password 
+# Here you must change the examples for your user and password and the name of the file must be "access.toml"
 # Viewer conexion: 
 # user="viewer" | pass="Viewer123?"
 user="user_example"
