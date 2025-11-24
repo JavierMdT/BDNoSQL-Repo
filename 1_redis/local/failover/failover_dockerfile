@@ -3,5 +3,7 @@ WORKDIR /usr/src/app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY failover.py .
-# CAMBIO CLAVE: Mantener el contenedor vivo sin ejecutar el script
 CMD ["tail", "-f", "/dev/null"]
+
+
+
