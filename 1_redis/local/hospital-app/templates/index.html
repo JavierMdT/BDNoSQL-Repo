@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Sistema Hospital Redis</h1>
+
+<div class="alert alert-info">
+    <strong>Master actual:</strong> {{ master }}
+</div>
+
+<div class="list-group">
+    <a href="/colas" class="list-group-item list-group-item-action">Ver colas de pacientes</a>
+    <a href="/empleados" class="list-group-item list-group-item-action">Ver empleados</a>
+</div>
+{% endblock %}
