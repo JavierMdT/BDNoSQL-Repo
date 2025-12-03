@@ -2,7 +2,7 @@
 
 Repositorio para las practicas de Bases de Datos No Relacionales.
 
-**Grupo hospitalario privado**
+**Contexto:** Grupo hospitalario privado.
 
 ## Parte 1 - Redis
 
