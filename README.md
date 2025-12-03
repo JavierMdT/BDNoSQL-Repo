@@ -1,6 +1,8 @@
 # BDNoSQL-Repo
+
 Repositorio para las practicas de Bases de Datos No Relacionales.
-Empresa ficticia: Grupo Hospitalario
+
+*Grupo hospitalario privado*
 
 ## Parte 1 - Redis
 
