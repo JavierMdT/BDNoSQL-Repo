@@ -1,6 +1,6 @@
 # Comandos usados para contenedores (opcion alternativo: usar docker desktop)
 
-Desde wd: working directory: ".../1_redis/local/"
+Desde el working directory: ".../1_redis/local/"
 
 1. Construir y levantar los contenedores:
     - `docker compose up -d --build`
