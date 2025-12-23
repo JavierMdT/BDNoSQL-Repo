@@ -251,7 +251,7 @@ print(`Insertados ${campusData.length} campus.`);
 
 const estudiosData = [
     // --- URJC ---
-    { _id: "estu_ing_datos", nombre: "Grado en Ciencia e Ingeniería de Datos", tipo: "GRADO", campus_id: "camp_mostoles_urjc", universidad: "URJC" },
+    { _id: "estu_ing_datos", nombre: "Grado en Ciencia e Ingeniería de Datos", tipo: "GRADO", campus_id: "camp_fuenlabrada_urjc", universidad: "URJC" },
     { _id: "estu_inf_urjc", nombre: "Grado en Ingeniería Informática", tipo: "GRADO", campus_id: "camp_mostoles_urjc", universidad: "URJC" },
     { _id: "estu_ciber_urjc", nombre: "Máster en Ciberseguridad", tipo: "MASTER", campus_id: "camp_mostoles_urjc", universidad: "URJC" },
     { _id: "estu_com_audiovisual", nombre: "Grado en Comunicación Audiovisual", tipo: "GRADO", campus_id: "camp_fuenlabrada_urjc", universidad: "URJC" },
@@ -276,3 +276,4 @@ print(`Insertados ${estudiosData.length} estudios.`);
 
 
 print("--- Carga completada con éxito. ---");
+
