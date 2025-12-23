@@ -1,7 +1,3 @@
-/**
- * Script de Carga de Datos - MetroCampus DS
- */
-
 // 1. Limpieza de base de datos (para evitar duplicados al re-ejecutar)
 db.estaciones.drop();
 db.lineas.drop();
@@ -277,5 +273,6 @@ const estudiosData = [
 
 db.estudios.insertMany(estudiosData);
 print(`Insertados ${estudiosData.length} estudios.`);
+
 
 print("--- Carga completada con éxito. ---");
