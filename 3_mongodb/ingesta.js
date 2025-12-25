@@ -11,73 +11,72 @@ print("--- Iniciando carga de datos MetroCampus DS ---");
 // ---------------------------------------------------------
 // Creamos un array masivo de estaciones. Incluimos IDs lógicos para referenciarlos fácil.
 // Nota: 'tieneRenfe' y 'zona' son requisitos explícitos.
-
 const estacionesData = [
     // --- L6 (Circular) y Cruces ---
     { _id: "est_moncloa", nombre: "Moncloa", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.435, lng: -3.718 } },
     { _id: "est_ciud_uni", nombre: "Ciudad Universitaria", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.443, lng: -3.726 } },
-    { _id: "est_metropolitano", nombre: "Metropolitano", tieneRenfe: false, zona: "A" },
-    { _id: "est_cuatro_caminos", nombre: "Cuatro Caminos", tieneRenfe: false, zona: "A" },
-    { _id: "est_nuevos_ministerios", nombre: "Nuevos Ministerios", tieneRenfe: true, zona: "A" }, // HUB IMPORTANTE
-    { _id: "est_republica_argentina", nombre: "República Argentina", tieneRenfe: false, zona: "A" },
-    { _id: "est_avenida_america", nombre: "Avenida de América", tieneRenfe: false, zona: "A" },
-    { _id: "est_diego_leon", nombre: "Diego de León", tieneRenfe: false, zona: "A" },
-    { _id: "est_manuel_becerra", nombre: "Manuel Becerra", tieneRenfe: false, zona: "A" },
-    { _id: "est_odonnell", nombre: "O'Donnell", tieneRenfe: false, zona: "A" },
-    { _id: "est_sainz_baranda", nombre: "Sainz de Baranda", tieneRenfe: false, zona: "A" },
-    { _id: "est_pacifico", nombre: "Pacífico", tieneRenfe: false, zona: "A" },
-    { _id: "est_mendez_alvaro", nombre: "Méndez Álvaro", tieneRenfe: true, zona: "A" }, // HUB
-    { _id: "est_legazpi", nombre: "Legazpi", tieneRenfe: false, zona: "A" },
-    { _id: "est_usera", nombre: "Usera", tieneRenfe: false, zona: "A" },
-    { _id: "est_plaza_eliptica", nombre: "Plaza Elíptica", tieneRenfe: false, zona: "A" },
-    { _id: "est_oporto", nombre: "Oporto", tieneRenfe: false, zona: "A" },
-    { _id: "est_carpetana", nombre: "Carpetana", tieneRenfe: false, zona: "A" },
-    { _id: "est_lucero", nombre: "Lucero", tieneRenfe: false, zona: "A" },
-    { _id: "est_principe_pio", nombre: "Príncipe Pío", tieneRenfe: true, zona: "A" }, // HUB
-    { _id: "est_arguelles", nombre: "Argüelles", tieneRenfe: false, zona: "A" },
+    { _id: "est_metropolitano", nombre: "Metropolitano", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.449, lng: -3.714 } },
+    { _id: "est_cuatro_caminos", nombre: "Cuatro Caminos", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.446, lng: -3.703 } },
+    { _id: "est_nuevos_ministerios", nombre: "Nuevos Ministerios", tieneRenfe: true, zona: "A", coordenadas: { lat: 40.445, lng: -3.691 } }, // HUB IMPORTANTE
+    { _id: "est_republica_argentina", nombre: "República Argentina", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.444, lng: -3.684 } },
+    { _id: "est_avenida_america", nombre: "Avenida de América", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.438, lng: -3.676 } },
+    { _id: "est_diego_leon", nombre: "Diego de León", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.434, lng: -3.673 } },
+    { _id: "est_manuel_becerra", nombre: "Manuel Becerra", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.428, lng: -3.669 } },
+    { _id: "est_odonnell", nombre: "O'Donnell", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.423, lng: -3.667 } },
+    { _id: "est_sainz_baranda", nombre: "Sainz de Baranda", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.415, lng: -3.669 } },
+    { _id: "est_pacifico", nombre: "Pacífico", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.400, lng: -3.675 } },
+    { _id: "est_mendez_alvaro", nombre: "Méndez Álvaro", tieneRenfe: true, zona: "A", coordenadas: { lat: 40.396, lng: -3.677 } }, // HUB
+    { _id: "est_legazpi", nombre: "Legazpi", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.391, lng: -3.695 } },
+    { _id: "est_usera", nombre: "Usera", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.388, lng: -3.707 } },
+    { _id: "est_plaza_eliptica", nombre: "Plaza Elíptica", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.384, lng: -3.718 } },
+    { _id: "est_oporto", nombre: "Oporto", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.388, lng: -3.731 } },
+    { _id: "est_carpetana", nombre: "Carpetana", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.392, lng: -3.741 } },
+    { _id: "est_lucero", nombre: "Lucero", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.403, lng: -3.743 } },
+    { _id: "est_principe_pio", nombre: "Príncipe Pío", tieneRenfe: true, zona: "A", coordenadas: { lat: 40.420, lng: -3.719 } }, // HUB
+    { _id: "est_arguelles", nombre: "Argüelles", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.430, lng: -3.715 } },
 
     // --- L10 (Norte - Sur) ---
-    { _id: "est_chamartin", nombre: "Chamartín", tieneRenfe: true, zona: "A" }, // HUB
-    { _id: "est_plaza_castilla", nombre: "Plaza de Castilla", tieneRenfe: false, zona: "A" },
-    { _id: "est_cuzco", nombre: "Cuzco", tieneRenfe: false, zona: "A" },
-    { _id: "est_santiago_bernabeu", nombre: "Santiago Bernabéu", tieneRenfe: false, zona: "A" },
-    { _id: "est_gregorio_maranon", nombre: "Gregorio Marañón", tieneRenfe: false, zona: "A" },
-    { _id: "est_alonso_martinez", nombre: "Alonso Martínez", tieneRenfe: false, zona: "A" },
-    { _id: "est_tribunal", nombre: "Tribunal", tieneRenfe: false, zona: "A" },
-    { _id: "est_plaza_espana", nombre: "Plaza de España", tieneRenfe: false, zona: "A" },
-    { _id: "est_lago", nombre: "Lago", tieneRenfe: false, zona: "A" },
-    { _id: "est_batan", nombre: "Batán", tieneRenfe: false, zona: "A" },
-    { _id: "est_casa_campo", nombre: "Casa de Campo", tieneRenfe: false, zona: "A" },
-    { _id: "est_colonia_jardin", nombre: "Colonia Jardín", tieneRenfe: false, zona: "A" },
-    { _id: "est_cuatro_vientos", nombre: "Cuatro Vientos", tieneRenfe: true, zona: "A" },
-    { _id: "est_joaquin_vilumbrales", nombre: "Joaquín Vilumbrales", tieneRenfe: false, zona: "B1" },
-    { _id: "est_puerta_sur", nombre: "Puerta del Sur", tieneRenfe: false, zona: "B1" },
+    { _id: "est_chamartin", nombre: "Chamartín", tieneRenfe: true, zona: "A", coordenadas: { lat: 40.472, lng: -3.682 } }, // HUB
+    { _id: "est_plaza_castilla", nombre: "Plaza de Castilla", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.466, lng: -3.689 } },
+    { _id: "est_cuzco", nombre: "Cuzco", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.458, lng: -3.690 } },
+    { _id: "est_santiago_bernabeu", nombre: "Santiago Bernabéu", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.451, lng: -3.690 } },
+    { _id: "est_gregorio_maranon", nombre: "Gregorio Marañón", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.438, lng: -3.691 } },
+    { _id: "est_alonso_martinez", nombre: "Alonso Martínez", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.427, lng: -3.695 } },
+    { _id: "est_tribunal", nombre: "Tribunal", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.425, lng: -3.701 } },
+    { _id: "est_plaza_espana", nombre: "Plaza de España", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.423, lng: -3.712 } },
+    { _id: "est_lago", nombre: "Lago", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.416, lng: -3.735 } },
+    { _id: "est_batan", nombre: "Batán", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.407, lng: -3.754 } },
+    { _id: "est_casa_campo", nombre: "Casa de Campo", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.403, lng: -3.760 } },
+    { _id: "est_colonia_jardin", nombre: "Colonia Jardín", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.397, lng: -3.774 } },
+    { _id: "est_cuatro_vientos", nombre: "Cuatro Vientos", tieneRenfe: true, zona: "A", coordenadas: { lat: 40.375, lng: -3.788 } },
+    { _id: "est_joaquin_vilumbrales", nombre: "Joaquín Vilumbrales", tieneRenfe: false, zona: "B1", coordenadas: { lat: 40.358, lng: -3.812 } },
+    { _id: "est_puerta_sur", nombre: "Puerta del Sur", tieneRenfe: false, zona: "B1", coordenadas: { lat: 40.352, lng: -3.818 } },
 
     // --- L12 (Metrosur - Universidades) ---
-    { _id: "est_parque_lisboa", nombre: "Parque Lisboa", tieneRenfe: false, zona: "B1" },
-    { _id: "est_alcorcon_central", nombre: "Alcorcón Central", tieneRenfe: true, zona: "B1" },
-    { _id: "est_parque_oeste", nombre: "Parque Oeste", tieneRenfe: false, zona: "B1" },
-    { _id: "est_urjc_mostoles", nombre: "Universidad Rey Juan Carlos", tieneRenfe: false, zona: "B1" }, // Parada propia URJC
-    { _id: "est_mostoles_central", nombre: "Móstoles Central", tieneRenfe: true, zona: "B1" },
-    { _id: "est_pradillo", nombre: "Pradillo", tieneRenfe: false, zona: "B1" },
-    { _id: "est_hospital_mostoles", nombre: "Hospital de Móstoles", tieneRenfe: false, zona: "B1" },
-    { _id: "est_manuela_malasana", nombre: "Manuela Malasaña", tieneRenfe: false, zona: "B1" },
-    { _id: "est_loranca", nombre: "Loranca", tieneRenfe: false, zona: "B1" },
-    { _id: "est_hospital_fuenlabrada", nombre: "Hospital de Fuenlabrada", tieneRenfe: false, zona: "B1" },
-    { _id: "est_fuenlabrada_central", nombre: "Fuenlabrada Central", tieneRenfe: true, zona: "B1" },
-    { _id: "est_parque_europa", nombre: "Parque Europa", tieneRenfe: false, zona: "B1" },
-    { _id: "est_arroyo_culebro", nombre: "Arroyo Culebro", tieneRenfe: false, zona: "B1" },
-    { _id: "est_getafe_central", nombre: "Getafe Central", tieneRenfe: true, zona: "B1" },
-    { _id: "est_juan_cierva", nombre: "Juan de la Cierva", tieneRenfe: false, zona: "B1" },
+    { _id: "est_parque_lisboa", nombre: "Parque Lisboa", tieneRenfe: false, zona: "B1", coordenadas: { lat: 40.349, lng: -3.824 } },
+    { _id: "est_alcorcon_central", nombre: "Alcorcón Central", tieneRenfe: true, zona: "B1", coordenadas: { lat: 40.349, lng: -3.834 } },
+    { _id: "est_parque_oeste", nombre: "Parque Oeste", tieneRenfe: false, zona: "B1", coordenadas: { lat: 40.341, lng: -3.851 } },
+    { _id: "est_urjc_mostoles", nombre: "Universidad Rey Juan Carlos", tieneRenfe: false, zona: "B1", coordenadas: { lat: 40.334, lng: -3.871 } }, // Parada propia URJC
+    { _id: "est_mostoles_central", nombre: "Móstoles Central", tieneRenfe: true, zona: "B1", coordenadas: { lat: 40.322, lng: -3.865 } },
+    { _id: "est_pradillo", nombre: "Pradillo", tieneRenfe: false, zona: "B1", coordenadas: { lat: 40.320, lng: -3.862 } },
+    { _id: "est_hospital_mostoles", nombre: "Hospital de Móstoles", tieneRenfe: false, zona: "B1", coordenadas: { lat: 40.311, lng: -3.868 } },
+    { _id: "est_manuela_malasana", nombre: "Manuela Malasaña", tieneRenfe: false, zona: "B1", coordenadas: { lat: 40.301, lng: -3.856 } },
+    { _id: "est_loranca", nombre: "Loranca", tieneRenfe: false, zona: "B1", coordenadas: { lat: 40.298, lng: -3.825 } },
+    { _id: "est_hospital_fuenlabrada", nombre: "Hospital de Fuenlabrada", tieneRenfe: false, zona: "B1", coordenadas: { lat: 40.285, lng: -3.804 } },
+    { _id: "est_fuenlabrada_central", nombre: "Fuenlabrada Central", tieneRenfe: true, zona: "B1", coordenadas: { lat: 40.285, lng: -3.793 } },
+    { _id: "est_parque_europa", nombre: "Parque Europa", tieneRenfe: false, zona: "B1", coordenadas: { lat: 40.279, lng: -3.781 } },
+    { _id: "est_arroyo_culebro", nombre: "Arroyo Culebro", tieneRenfe: false, zona: "B1", coordenadas: { lat: 40.278, lng: -3.762 } },
+    { _id: "est_getafe_central", nombre: "Getafe Central", tieneRenfe: true, zona: "B1", coordenadas: { lat: 40.308, lng: -3.731 } },
+    { _id: "est_juan_cierva", nombre: "Juan de la Cierva", tieneRenfe: false, zona: "B1", coordenadas: { lat: 40.312, lng: -3.721 } },
 
     // --- L3 (Centro - Moncloa) ---
-    { _id: "est_ventura_rodriguez", nombre: "Ventura Rodríguez", tieneRenfe: false, zona: "A" },
-    { _id: "est_callao", nombre: "Callao", tieneRenfe: false, zona: "A" },
-    { _id: "est_sol", nombre: "Sol", tieneRenfe: true, zona: "A" }, // MEGA HUB
-    { _id: "est_lavapies", nombre: "Lavapiés", tieneRenfe: false, zona: "A" },
-    { _id: "est_embajadores", nombre: "Embajadores", tieneRenfe: true, zona: "A" },
-    { _id: "est_palos_frontera", nombre: "Palos de la Frontera", tieneRenfe: false, zona: "A" },
-    { _id: "est_delicias", nombre: "Delicias", tieneRenfe: true, zona: "A" }
+    { _id: "est_ventura_rodriguez", nombre: "Ventura Rodríguez", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.426, lng: -3.714 } },
+    { _id: "est_callao", nombre: "Callao", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.420, lng: -3.705 } },
+    { _id: "est_sol", nombre: "Sol", tieneRenfe: true, zona: "A", coordenadas: { lat: 40.416, lng: -3.703 } }, // MEGA HUB
+    { _id: "est_lavapies", nombre: "Lavapiés", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.408, lng: -3.700 } },
+    { _id: "est_embajadores", nombre: "Embajadores", tieneRenfe: true, zona: "A", coordenadas: { lat: 40.405, lng: -3.702 } },
+    { _id: "est_palos_frontera", nombre: "Palos de la Frontera", tieneRenfe: false, zona: "A", coordenadas: { lat: 40.403, lng: -3.694 } },
+    { _id: "est_delicias", nombre: "Delicias", tieneRenfe: true, zona: "A", coordenadas: { lat: 40.398, lng: -3.691 } }
 ];
 
 db.estaciones.insertMany(estacionesData);
