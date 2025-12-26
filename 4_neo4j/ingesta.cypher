@@ -1,6 +1,6 @@
 /* _______________1. CREACION DE LOS NODOS_______________*/
 
-// ESTACIONES
+// ---------- ESTACIONES ----------
 UNWIND [
   {_id: "est_moncloa", nombre: "Moncloa", tieneRenfe: false, zona: "A", coords: [40.435, -3.718]},
   {_id: "est_ciud_uni", nombre: "Ciudad Universitaria", tieneRenfe: false, zona: "A", coords: [40.443, -3.726]},
@@ -60,31 +60,30 @@ UNWIND [
   {_id: "est_embajadores", nombre: "Embajadores", tieneRenfe: true, zona: "A", coords: [40.405, -3.702]},
   {_id: "est_palos_frontera", nombre: "Palos de la Frontera", tieneRenfe: false, zona: "A", coords: [40.403, -3.694]},
   {_id: "est_delicias", nombre: "Delicias", tieneRenfe: true, zona: "A", coords: [40.398, -3.691]}
-] AS estaciones
+] AS estaciones_unwind 
 
-CREATE (:Estacion {
-    _id: estaciones._id,
-    nombre: estaciones.nombre,
-    tieneRenfe: estaciones.renfe,
-    zona: estaciones.zona,
-    coordenadas: estaciones.coords
-});
 
-// LINEA
+MERGE(e:Estacion {_id: estaciones_unwind._id})
+ON CREATE SET 
+    e.nombre = estaciones_unwind.nombre,
+    e.tieneRenfe = estaciones_unwind.tieneRenfe,
+    e.zona = estaciones_unwind.zona,
+    e.coordenadas = estaciones_unwind.coords;
+
+// ---------- LINEA ----------
 UNWIND [
   { _id: "lin_6", nombre: "Línea 6", color: "#999999" },
   { _id: "lin_10", nombre: "Línea 10", color: "#0055a4" },
   { _id: "lin_3", nombre: "Línea 3", color: "#ffee00" },
   { _id: "lin_12", nombre: "Línea 12 (Metrosur)", color: "#a49400" }
-] AS lineas
+] AS lineas_unwind
 
-CREATE (:Linea {
-    _id: lineas._id, 
-    nombre: lineas.nombre, 
-    color: lineas.color
-});
+MERGE (l:Linea {_id: lineas_unwind._id})
+ON CREATE SET
+    l.nombre = lineas_unwind.nombre,
+    l.color = lineas_unwind.color;
 
-// CAMPUS 
+// ---------- CAMPUS ---------- 
 UNWIND [
     {
         _id: "camp_ciud_uni_ucm",
@@ -111,16 +110,14 @@ UNWIND [
         nombre: "Campus de Fuenlabrada",
         universidad: "URJC"
     }
-] AS campus
+] AS campus_unwind
 
-CREATE (:Campus {
-  _id: campus._id,
-  nombre: campus.nombre,
-  universidad: campus.universidad
-});
+MERGE(c:Campus {_id: campus_unwind._id})
+ON CREATE SET
+    c.nombre = campus_unwind.nombre,
+    c.universidad = campus_unwind.universidad;
 
-// ESTUDIOS
-// 5. COLECCIÓN: ESTUDIOS
+// ---------- ESTUDIOS ----------
 UNWIND [
     // --- URJC ---
     { _id: "estu_ing_datos", nombre: "Grado en Ciencia e Ingeniería de Datos", tipo: "GRADO" },
@@ -141,17 +138,16 @@ UNWIND [
     { _id: "estu_derecho_eco", nombre: "Doble Grado Derecho y Economía", tipo: "GRADO" },
     { _id: "estu_rrll", nombre: "Grado en Relaciones Laborales", tipo: "GRADO" },
     { _id: "estu_master_rrhh", nombre: "Máster en Recursos Humanos", tipo: "MASTER" }
-] AS estudios
+] AS estudios_unwind
 
-CREATE (:Estudio {
-  _id: estudios._id,
-  nombre: estudios.nombre,
-  tipo: estudios.tipo
-});
+MERGE(e:Estudio {_id: estudios_unwind._id})
+ON CREATE SET
+    e.nombre = estudios_unwind.nombre,
+    e.tipo = estudios_unwind.tipo;
 
 /* _______________2. CREACION DE LAS ARISTAS_______________*/
 
-// Linea --(tiene_estacion)-> Estacion
+// -------- Linea --(tiene_estacion)-> Estacion --------
 UNWIND [
     {
         _id: "lin_6",
@@ -206,9 +202,11 @@ UNWIND data.trayecto AS parada
 // Esto busca en el grafo los nodos tipo "Estacion" cuyo id coincida con el que hay la parada en la que estamos
 MATCH (estacion:Estacion { _id: parada.estacion_id }) 
 // Cuando tenemos todo se crea la arista
-CREATE (linea)-[:tiene_estacion { orden: parada.orden }]->(estacion); 
+MERGE (linea)-[arista:tiene_estacion]->(estacion)
+ON CREATE SET
+    arista.orden = parada.orden;
 
-// Estacion --(siguiente)-> Estacion
+// -------- Estacion --(siguiente)-> Estacion --------
 
 UNWIND [
   {origen: "est_moncloa", destino: "est_ciud_uni", linea: "L6"},
@@ -255,7 +253,6 @@ UNWIND [
   {origen: "est_callao", destino: "est_sol", linea: "L3"},
   {origen: "est_sol", destino: "est_lavapies", linea: "L3"},
   {origen: "est_lavapies", destino: "est_embajadores", linea: "L3"},
-  {origen: "est_lavapies", destino: "est_embajadores", linea: "L3"},
   {origen: "est_embajadores", destino: "est_palos_frontera", linea: "L3"},
   {origen: "est_palos_frontera", destino: "est_delicias", linea: "L3"},
   {origen: "est_delicias", destino: "est_legazpi", linea: "L3"},
@@ -281,9 +278,11 @@ MATCH (a:Estacion {_id: s.origen})
 MATCH (b:Estacion {_id: s.destino})
 
 // Creamos las arista una vez tenemos todo
-CREATE (a)-[:siguiente {linea: s.linea}]->(b);
+MERGE (a)-[arista:siguiente]->(b)
+ON CREATE SET
+    arista.linea = s.linea;
 
-// Campus --(estacion_cercana)-> Estacion
+// -------- Campus --(estacion_cercana)-> Estacion --------
 UNWIND [
     {
         _id: "camp_ciud_uni_ucm",
@@ -328,9 +327,12 @@ UNWIND data.estacionesCercanas AS cercanas
 // Buscamos cada estacion de la lista desenrollada 
 MATCH (estacion:Estacion { _id: cercanas.estacion_id })
 // Tenemos todo, creamos la arista correspondiente
-CREATE (campus)-[:cercana { tipo: cercanas.tipo, distanciaMinutos: cercanas.distanciaMinutos }]->(estacion);
+MERGE (campus)-[arista:cercana]->(estacion)
+ON CREATE SET
+    arista.tipo = cercanas.tipo,
+    arista.distanciaMinutos = cercanas.distanciaMinutos;
 
-// Campus --(ofrece)-> Estudios
+// -------- Campus --(ofrece)-> Estudios
 UNWIND [
     {
         campus_id: "camp_fuenlabrada_urjc",
@@ -361,5 +363,5 @@ UNWIND data.estudios AS estudio_id
 // Buscamos el nodo del estudio correspondiente
 MATCH (estudios:Estudio { _id: estudio_id })
 // Creamos la arista
-CREATE (campus)-[:ofrece]->(estudios);
+MERGE (campus)-[:ofrece]->(estudios);
 
