@@ -70,6 +70,8 @@ ON CREATE SET
     e.zona = estaciones_unwind.zona,
     e.coordenadas = estaciones_unwind.coords;
 
+
+
 // ---------- LINEA ----------
 UNWIND [
   { _id: "lin_6", nombre: "Línea 6", color: "#999999" },
@@ -112,10 +114,14 @@ UNWIND [
     }
 ] AS campus_unwind
 
+
+
 MERGE(c:Campus {_id: campus_unwind._id})
 ON CREATE SET
     c.nombre = campus_unwind.nombre,
     c.universidad = campus_unwind.universidad;
+
+
 
 // ---------- ESTUDIOS ----------
 UNWIND [
@@ -150,6 +156,8 @@ ON CREATE SET
     e.tipo = estudios_unwind.tipo;
 
 /* _______________2. CREACION DE LAS ARISTAS_______________*/
+
+
 
 // -------- Linea --(tiene_estacion)-> Estacion --------
 UNWIND [
@@ -211,7 +219,6 @@ ON CREATE SET
     arista.orden = parada.orden;
 
 // -------- Estacion --(siguiente)-> Estacion --------
-
 UNWIND [
   {origen: "est_moncloa", destino: "est_ciud_uni", linea: "L6"},
   {origen: "est_ciud_uni", destino: "est_metropolitano", linea: "L6"},
@@ -281,10 +288,15 @@ UNWIND [
 MATCH (a:Estacion {_id: s.origen})
 MATCH (b:Estacion {_id: s.destino})
 
-// Creamos las arista una vez tenemos todo
-MERGE (a)-[arista:siguiente]->(b)
-ON CREATE SET
-    arista.linea = s.linea;
+// Creamos la arista de ida
+MERGE (a)-[r1:siguiente]->(b)
+ON CREATE SET r1.linea = s.linea
+
+// Creamos la arista de vuelta
+MERGE (b)-[r2:siguiente]->(a)
+ON CREATE SET r2.linea = s.linea;
+
+
 
 // -------- Campus --(estacion_cercana)-> Estacion --------
 UNWIND [
@@ -335,6 +347,7 @@ MERGE (campus)-[arista:cercana]->(estacion)
 ON CREATE SET
     arista.tipo = cercanas.tipo,
     arista.distanciaMinutos = cercanas.distanciaMinutos;
+
 
 // -------- Campus --(ofrece)-> Estudios --------
 UNWIND [
