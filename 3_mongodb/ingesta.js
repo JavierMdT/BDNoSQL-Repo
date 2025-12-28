@@ -249,25 +249,29 @@ print(`Insertados ${campusData.length} campus.`);
 // Colección separada para facilitar CRUD y conteos.
 
 const estudiosData = [
-    // --- URJC ---
-    { _id: "estu_ing_datos", nombre: "Grado en Ciencia e Ingeniería de Datos", tipo: "GRADO", campus_id: "camp_fuenlabrada_urjc", universidad: "URJC" },
-    { _id: "estu_inf_urjc", nombre: "Grado en Ingeniería Informática", tipo: "GRADO", campus_id: "camp_mostoles_urjc", universidad: "URJC" },
-    { _id: "estu_ciber_urjc", nombre: "Máster en Ciberseguridad", tipo: "MASTER", campus_id: "camp_mostoles_urjc", universidad: "URJC" },
-    { _id: "estu_com_audiovisual", nombre: "Grado en Comunicación Audiovisual", tipo: "GRADO", campus_id: "camp_fuenlabrada_urjc", universidad: "URJC" },
+    // GRADOS (10)
+    { _id: "estu_ing_datos", nombre: "Grado en Ciencia e Ingeniería de Datos", tipo: "GRADO", localizaciones: ["camp_fuenlabrada_urjc", "camp_getafe_uc3m"] },
+    { _id: "estu_inf", nombre: "Grado en Ingeniería Informática", tipo: "GRADO", localizaciones: ["camp_mostoles_urjc", "camp_monte_gancedo_upm", "camp_ciud_uni_ucm"] },
+    { _id: "estu_com_audiovisual", nombre: "Grado en Comunicación Audiovisual", tipo: "GRADO", localizaciones: ["camp_fuenlabrada_urjc"] },
+    { _id: "estu_medicina", nombre: "Grado en Medicina", tipo: "GRADO", localizaciones: ["camp_ciud_uni_ucm"] },
+    { _id: "estu_fisicas", nombre: "Grado en Ciencias Físicas", tipo: "GRADO", localizaciones: ["camp_ciud_uni_ucm"] },
+    { _id: "estu_ing_software", nombre: "Grado en Ingeniería del Software", tipo: "GRADO", localizaciones: ["camp_monte_gancedo_upm", "camp_mostoles_urjc"] },
+    { _id: "estu_derecho_eco", nombre: "Doble Grado Derecho y Economía", tipo: "GRADO", localizaciones: ["camp_getafe_uc3m", "camp_ciud_uni_ucm"] },
+    { _id: "estu_rrll", nombre: "Grado en Relaciones Laborales", tipo: "GRADO", localizaciones: ["camp_getafe_uc3m"] },
+    { _id: "estu_matematicas", nombre: "Grado en Matemáticas", tipo: "GRADO", localizaciones: ["camp_ciud_uni_ucm", "camp_mostoles_urjc"] },
+    { _id: "estu_administracion", nombre: "Grado en Administración de Empresas", tipo: "GRADO", localizaciones: ["camp_getafe_uc3m", "camp_fuenlabrada_urjc", "camp_ciud_uni_ucm"] },
 
-    // --- UCM ---
-    { _id: "estu_medicina", nombre: "Grado en Medicina", tipo: "GRADO", campus_id: "camp_ciud_uni_ucm", universidad: "UCM" },
-    { _id: "estu_fisicas", nombre: "Grado en Ciencias Físicas", tipo: "GRADO", campus_id: "camp_ciud_uni_ucm", universidad: "UCM" },
-    { _id: "estu_master_biotech", nombre: "Máster en Biotecnología", tipo: "MASTER", campus_id: "camp_ciud_uni_ucm", universidad: "UCM" },
+    // MASTERS (5)
+    { _id: "estu_ciber", nombre: "Máster en Ciberseguridad", tipo: "MASTER", localizaciones: ["camp_mostoles_urjc", "camp_monte_gancedo_upm"] },
+    { _id: "estu_master_biotech", nombre: "Máster en Biotecnología", tipo: "MASTER", localizaciones: ["camp_ciud_uni_ucm"] },
+    { _id: "estu_master_ia", nombre: "Máster en Inteligencia Artificial", tipo: "MASTER", localizaciones: ["camp_monte_gancedo_upm", "camp_mostoles_urjc", "camp_getafe_uc3m"] },
+    { _id: "estu_master_rrhh", nombre: "Máster en Recursos Humanos", tipo: "MASTER", localizaciones: ["camp_getafe_uc3m"] },
+    { _id: "estu_master_datos", nombre: "Máster en Big Data", tipo: "MASTER", localizaciones: ["camp_fuenlabrada_urjc", "camp_ciud_uni_ucm"] },
 
-    // --- UPM ---
-    { _id: "estu_ing_software", nombre: "Grado en Ingeniería del Software", tipo: "GRADO", campus_id: "camp_monte_gancedo_upm", universidad: "UPM" },
-    { _id: "estu_master_ia", nombre: "Máster en Inteligencia Artificial", tipo: "MASTER", campus_id: "camp_monte_gancedo_upm", universidad: "UPM" },
-
-    // --- UC3M ---
-    { _id: "estu_derecho_eco", nombre: "Doble Grado Derecho y Economía", tipo: "GRADO", campus_id: "camp_getafe_uc3m", universidad: "UC3M" },
-    { _id: "estu_rrll", nombre: "Grado en Relaciones Laborales", tipo: "GRADO", campus_id: "camp_getafe_uc3m", universidad: "UC3M" },
-    { _id: "estu_master_rrhh", nombre: "Máster en Recursos Humanos", tipo: "MASTER", campus_id: "camp_getafe_uc3m", universidad: "UC3M" }
+    // DOCTORADOS (3)
+    { _id: "estu_doc_informatica", nombre: "Doctorado en Informática", tipo: "DOCTORADO", localizaciones: ["camp_mostoles_urjc", "camp_monte_gancedo_upm"] },
+    { _id: "estu_doc_ciencias", nombre: "Doctorado en Ciencias", tipo: "DOCTORADO", localizaciones: ["camp_ciud_uni_ucm"] },
+    { _id: "estu_doc_empresa", nombre: "Doctorado en Economía y Empresa", tipo: "DOCTORADO", localizaciones: ["camp_getafe_uc3m", "camp_fuenlabrada_urjc"] }
 ];
 
 db.estudios.insertMany(estudiosData);

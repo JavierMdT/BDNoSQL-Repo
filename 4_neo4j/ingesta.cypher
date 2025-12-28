@@ -119,25 +119,29 @@ ON CREATE SET
 
 // ---------- ESTUDIOS ----------
 UNWIND [
-    // --- URJC ---
+    // GRADOS (10)
     { _id: "estu_ing_datos", nombre: "Grado en Ciencia e Ingeniería de Datos", tipo: "GRADO" },
-    { _id: "estu_inf_urjc", nombre: "Grado en Ingeniería Informática", tipo: "GRADO" },
-    { _id: "estu_ciber_urjc", nombre: "Máster en Ciberseguridad", tipo: "MASTER" },
+    { _id: "estu_inf", nombre: "Grado en Ingeniería Informática", tipo: "GRADO" },
     { _id: "estu_com_audiovisual", nombre: "Grado en Comunicación Audiovisual", tipo: "GRADO" },
-
-    // --- UCM ---
     { _id: "estu_medicina", nombre: "Grado en Medicina", tipo: "GRADO" },
     { _id: "estu_fisicas", nombre: "Grado en Ciencias Físicas", tipo: "GRADO" },
-    { _id: "estu_master_biotech", nombre: "Máster en Biotecnología", tipo: "MASTER" },
-
-    // --- UPM ---
     { _id: "estu_ing_software", nombre: "Grado en Ingeniería del Software", tipo: "GRADO" },
-    { _id: "estu_master_ia", nombre: "Máster en Inteligencia Artificial", tipo: "MASTER" },
-
-    // --- UC3M ---
     { _id: "estu_derecho_eco", nombre: "Doble Grado Derecho y Economía", tipo: "GRADO" },
     { _id: "estu_rrll", nombre: "Grado en Relaciones Laborales", tipo: "GRADO" },
-    { _id: "estu_master_rrhh", nombre: "Máster en Recursos Humanos", tipo: "MASTER" }
+    { _id: "estu_matematicas", nombre: "Grado en Matemáticas", tipo: "GRADO" },
+    { _id: "estu_administracion", nombre: "Grado en Administración de Empresas", tipo: "GRADO" },
+
+    // MASTERS (5)
+    { _id: "estu_ciber", nombre: "Máster en Ciberseguridad", tipo: "MASTER" },
+    { _id: "estu_master_biotech", nombre: "Máster en Biotecnología", tipo: "MASTER" },
+    { _id: "estu_master_ia", nombre: "Máster en Inteligencia Artificial", tipo: "MASTER" },
+    { _id: "estu_master_rrhh", nombre: "Máster en Recursos Humanos", tipo: "MASTER" },
+    { _id: "estu_master_datos", nombre: "Máster en Big Data", tipo: "MASTER" },
+
+    // DOCTORADOS (3)
+    { _id: "estu_doc_informatica", nombre: "Doctorado en Informática", tipo: "DOCTORADO" },
+    { _id: "estu_doc_ciencias", nombre: "Doctorado en Ciencias", tipo: "DOCTORADO" },
+    { _id: "estu_doc_empresa", nombre: "Doctorado en Economía y Empresa", tipo: "DOCTORADO" }
 ] AS estudios_unwind
 
 MERGE(e:Estudio {_id: estudios_unwind._id})
@@ -332,36 +336,33 @@ ON CREATE SET
     arista.tipo = cercanas.tipo,
     arista.distanciaMinutos = cercanas.distanciaMinutos;
 
-// -------- Campus --(ofrece)-> Estudios
+// -------- Campus --(ofrece)-> Estudios --------
 UNWIND [
-    {
-        campus_id: "camp_fuenlabrada_urjc",
-        estudios: ["estu_ing_datos", "estu_com_audiovisual"]
-    },
-    {
-        campus_id: "camp_mostoles_urjc",
-        estudios: ["estu_inf_urjc", "estu_ciber_urjc"]
-    },
-    {
-        campus_id: "camp_ciud_uni_ucm",
-        estudios: ["estu_medicina", "estu_fisicas", "estu_master_biotech"]
-    },
-    {
-        campus_id: "camp_monte_gancedo_upm",
-        estudios: ["estu_ing_software", "estu_master_ia"]
-    },
-    {
-        campus_id: "camp_getafe_uc3m",
-        estudios: ["estu_derecho_eco", "estu_rrll", "estu_master_rrhh"]
-    }
+    { _id: "estu_ing_datos", localizaciones: ["camp_fuenlabrada_urjc", "camp_getafe_uc3m"] },
+    { _id: "estu_inf", localizaciones: ["camp_mostoles_urjc", "camp_monte_gancedo_upm", "camp_ciud_uni_ucm"] },
+    { _id: "estu_com_audiovisual", localizaciones: ["camp_fuenlabrada_urjc"] },
+    { _id: "estu_medicina", localizaciones: ["camp_ciud_uni_ucm"] },
+    { _id: "estu_fisicas", localizaciones: ["camp_ciud_uni_ucm"] },
+    { _id: "estu_ing_software", localizaciones: ["camp_monte_gancedo_upm", "camp_mostoles_urjc"] },
+    { _id: "estu_derecho_eco", localizaciones: ["camp_getafe_uc3m", "camp_ciud_uni_ucm"] },
+    { _id: "estu_rrll", localizaciones: ["camp_getafe_uc3m"] },
+    { _id: "estu_matematicas", localizaciones: ["camp_ciud_uni_ucm", "camp_mostoles_urjc"] },
+    { _id: "estu_administracion", localizaciones: ["camp_getafe_uc3m", "camp_fuenlabrada_urjc", "camp_ciud_uni_ucm"] },
+    { _id: "estu_ciber", localizaciones: ["camp_mostoles_urjc", "camp_monte_gancedo_upm"] },
+    { _id: "estu_master_biotech", localizaciones: ["camp_ciud_uni_ucm"] },
+    { _id: "estu_master_ia", localizaciones: ["camp_monte_gancedo_upm", "camp_mostoles_urjc", "camp_getafe_uc3m"] },
+    { _id: "estu_master_rrhh", localizaciones: ["camp_getafe_uc3m"] },
+    { _id: "estu_master_datos", localizaciones: ["camp_fuenlabrada_urjc", "camp_ciud_uni_ucm"] },
+    { _id: "estu_doc_informatica", localizaciones: ["camp_mostoles_urjc", "camp_monte_gancedo_upm"] },
+    { _id: "estu_doc_ciencias", localizaciones: ["camp_ciud_uni_ucm"] },
+    { _id: "estu_doc_empresa", localizaciones: ["camp_getafe_uc3m", "camp_fuenlabrada_urjc"] }
 ] AS data
 
-// Miramos el campus que toque
-MATCH (campus:Campus { _id: data.campus_id })
-// Desenrollamos los estudios asociados en la lista y vamos de uno en uno
-UNWIND data.estudios AS estudio_id
-// Buscamos el nodo del estudio correspondiente
-MATCH (estudios:Estudio { _id: estudio_id })
-// Creamos la arista
-MERGE (campus)-[:ofrece]->(estudios);
-
+// Buscamos el nodo del estudio correspondiente 
+MATCH (estudio:Estudio { _id: data._id })
+// Desenrollamos las localizaciones (campus) asociadas 
+UNWIND data.localizaciones AS campus_id
+// Buscamos cada nodo campus de la lista 
+MATCH (campus:Campus { _id: campus_id })
+// Creamos la arista 
+MERGE (campus)-[:ofrece]->(estudio);
