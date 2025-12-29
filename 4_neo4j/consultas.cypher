@@ -1,8 +1,8 @@
-/* _______________ A. CONSULTAS ESTRUCTURALES  _______________*/
+/* _____________________________________________ A. CONSULTAS ESTRUCTURALES  _____________________________________________*/
 
-/* _______________ B. CONSULTAS SOBRE CAMPUS Y ESTUDIO  _______________*/
+/* _____________________________________________ B. CONSULTAS SOBRE CAMPUS Y ESTUDIO  _____________________________________________*/
 
-/* _______________ C. CONSULTAS DE RUTAS _______________*/
+/* _____________________________________________ C. CONSULTAS DE RUTAS _____________________________________________*/
 
 // ENCONTRAR CAMINO MAS CORTO DESDE UNA ESTACION HASTA UN CAMPUS
 
@@ -63,5 +63,46 @@ RETURN
     mejorOpcion.nombreEstacion as EstacionDestino,
     mejorOpcion.longitud as LongitudCamino;
 
-/* _______________ D. CAMBIOS DE LINEA Y COMPARATIVA AVANZADA  _______________*/
+
+/* _____________________________________________ D. CAMBIOS DE LINEA Y COMPARATIVA AVANZADA  _____________________________________________*/
+
+// Calcular el número de cambios de linea en un trayecto 
+// Comparar las rutas por numero de cambios de linea y numero total de estaciones 
+
+// 1. Alias
+WITH "est_pradillo" as OrigenId, "est_getafe_central" as DestinoId
+
+// 2. Busqueda de caminos
+MATCH (Origen:Estacion {_id:OrigenId})
+MATCH (Destino:Estacion {_id:DestinoId})
+MATCH camino = (Origen)-[:siguiente*..20]->(Destino) // Caminos limitados a 20 por si acaso
+
+// --- FILTRO NUEVO: Esto elimina los bucles (A->B->A) ---
+WHERE ALL(n IN nodes(camino) WHERE size([m IN nodes(camino) WHERE m = n]) = 1)
+// --------------------------------------------------------
+
+// 3. Extraemos las relaciones y creamos la lista de incides
+WITH camino, relationships(camino) AS listaRelaciones
+WITH camino, listaRelaciones, range(0, size(listaRelaciones) - 2) AS indices
+
+// 4. Desenrollamos el indice para ir comparando cada relacion con la posterior 
+UNWIND (CASE WHEN indices = [] THEN [null] ELSE indices END) AS indice
+
+// 5. Comparacion
+WITH camino, 
+    (CASE WHEN indice IS NOT NULL THEN listaRelaciones[indice].linea ELSE null END) AS lineaActual,
+    (CASE WHEN indice IS NOT NULL THEN listaRelaciones[indice+1].linea ELSE null END) AS lineaSiguiente
+
+// 6. Conteo, solo suma si lineaActual es distinta a lineaSiguiente        
+WITH camino,
+    count(CASE WHEN lineaActual <> lineaSiguiente THEN 1 END) as totalCambios,
+    size(relationships(camino)) as totalEstaciones
+
+// 7. Devolver resultados
+RETURN [estacion in nodes(camino) | estacion.nombre] as estaciones,
+    totalCambios,
+    totalEstaciones
+ORDER BY totalCambios ASC, totalEstaciones ASC
+LIMIT 5 // Limitador por si acaso
+
 
