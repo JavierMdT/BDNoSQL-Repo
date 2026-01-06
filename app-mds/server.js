@@ -9,8 +9,12 @@ app.use(express.json());
 
 const mongoUrl = 'mongodb://localhost:27017';
 const mongoClient = new MongoClient(mongoUrl);
-const neoDriver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'password123'));
 
+const uri = 'bolt://localhost:7687';
+const user = 'neo4j';
+const password = 'password123';
+
+const neoDriver = neo4j.driver(uri, neo4j.auth.basic(user, password));
 async function connectDB() {
     try {
         await mongoClient.connect();
