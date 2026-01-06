@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>MetroCampus MDS | Hub Universitario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root { --mds-blue: #003566; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .header-mds { background: var(--mds-blue); color: white; padding: 15px; border-radius: 0 0 15px 15px; margin-bottom: 20px; }
+        #map { height: 75vh; border-radius: 15px; background: #222; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .sidebar { height: 75vh; overflow-y: auto; background: white; padding: 20px; border-radius: 15px; }
+        .campus-glow { font-size: 30px; filter: drop-shadow(0 0 8px gold); cursor: pointer; }
+        .linea-tag { padding: 3px 10px; border-radius: 20px; color: white; font-weight: bold; font-size: 0.75em; display: inline-block; }
+        .paso-est { border-left: 2px solid #eee; margin-left: 10px; padding: 8px 20px; position: relative; font-size: 0.9em; }
+        .paso-est::before { content: ''; position: absolute; left: -7px; top: 14px; width: 12px; height: 12px; background: white; border: 2px solid var(--mds-blue); border-radius: 50%; }
+        .nav-pills .nav-link.active { background-color: var(--mds-blue); }
+        .info-card { border-left: 5px solid var(--mds-blue); background: #f8f9fa; padding: 10px; margin-top: 15px; font-size: 0.85em; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container-fluid">
+    <header class="header-mds shadow-sm">
+        <h3 class="m-0 text-center">🚇 MetroCampus Data Services (MDS)</h3>
+    </header>
+
+    <div class="row px-2">
+        <div class="col-md-8">
+            <div id="map"></div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="sidebar shadow-sm">
+                <ul class="nav nav-pills nav-fill mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active" id="tab-ruta" data-bs-toggle="pill" data-bs-target="#panel-ruta">Rutas</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="tab-lineas" data-bs-toggle="pill" data-bs-target="#panel-lineas">Líneas</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="panel-ruta">
+                        <label class="small fw-bold text-muted">ORIGEN (ESTACIÓN)</label>
+                        <select id="selOri" class="form-select mb-3 shadow-sm"></select>
+                        
+                        <label class="small fw-bold text-muted">DESTINO (CAMPUS)</label>
+                        <select id="selCam" class="form-select mb-4 shadow-sm"></select>
+                        
+                        <button class="btn btn-primary w-100 fw-bold py-2" onclick="trazarRuta()">CALCULAR TRAYECTO</button>
+                        <hr>
+                        <div id="itinerario"></div>
+                    </div>
+
+                    <div class="tab-pane fade" id="panel-lineas">
+                        <p class="small text-muted">Selecciona una línea para visualizar su recorrido y campus conectados.</p>
+                        <select id="selLin" class="form-select mb-3 shadow-sm" onchange="verDetalleLinea()">
+                            <option value="">-- Seleccionar Línea --</option>
+                        </select>
+                        <div id="detalle-linea"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // Inicialización del mapa con el servidor de azulejos de OpenStreetMap (más estable)
+    const map = L.map('map').setView([40.4167, -3.7033], 11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let dataMD = null; 
+    let capasActivas = [];
+    const colores = { "L6": "#999999", "L10": "#0055a4", "L3": "#ffee00", "L12": "#a49400" };
+
+    fetch('/api/map-data').then(res => res.json()).then(data => {
+        dataMD = data;
+        const sO = document.getElementById('selOri');
+        const sC = document.getElementById('selCam');
+        const sL = document.getElementById('selLin');
+
+        data.estaciones.sort((a,b)=>a.nombre.localeCompare(b.nombre)).forEach(e => {
+            sO.innerHTML += `<option value="${e.nombre}">${e.nombre}</option>`;
+        });
+        data.campus.forEach(c => {
+            sC.innerHTML += `<option value="${c._id}">${c.universidad} - ${c.nombre}</option>`;
+        });
+        data.lineas.forEach(l => {
+            sL.innerHTML += `<option value="${l._id}">${l.nombre}</option>`;
+        });
+
+        dibujarIconosCampus();
+    });
+
+    function dibujarIconosCampus() {
+        dataMD.campus.forEach(c => {
+            const eP = dataMD.estaciones.find(est => est._id === c.estacionesCercanas[0].estacion_id);
+            if(eP) {
+                L.marker([eP.coordenadas.lat, eP.coordenadas.lng], {
+                    icon: L.divIcon({ html: '🏛️', className: 'campus-glow' })
+                }).addTo(map).bindPopup(`<b>${c.nombre}</b><br>${c.universidad}`);
+            }
+        });
+    }
+
+    async function trazarRuta() {
+        const origen = document.getElementById('selOri').value;
+        const campusId = document.getElementById('selCam').value;
+        
+        const res = await fetch(`/api/ruta-detallada?origen=${origen}&campusId=${campusId}`);
+        if(!res.ok) return alert("No se pudo calcular la ruta.");
+        
+        const ruta = await res.json();
+        limpiarMapa();
+
+        const iti = document.getElementById('itinerario');
+        iti.innerHTML = `<div class="alert alert-success py-2"><strong>${ruta.distancia}</strong> paradas totales</div>`;
+
+        for(let i = 0; i < ruta.ids.length; i++) {
+            const estActual = dataMD.estaciones.find(e => e._id === ruta.ids[i]);
+            const lineaLabel = ruta.tramos[i];
+            const color = colores[lineaLabel] || "#333";
+
+            if(ruta.ids[i+1]) {
+                const estSig = dataMD.estaciones.find(e => e._id === ruta.ids[i+1]);
+                const poly = L.polyline([
+                    [estActual.coordenadas.lat, estActual.coordenadas.lng],
+                    [estSig.coordenadas.lat, estSig.coordenadas.lng]
+                ], { color: color, weight: 5, opacity: 0.8 }).addTo(map);
+                capasActivas.push(poly);
+            }
+
+            iti.innerHTML += `
+                <div class="paso-est">
+                    <span class="fw-bold">${estActual.nombre}</span> 
+                    ${lineaLabel ? `<span class="linea-tag ms-2" style="background:${color}">${lineaLabel}</span>` : ''}
+                </div>`;
+        }
+        ajustarVista();
+    }
+
+    function verDetalleLinea() {
+        const lineaId = document.getElementById('selLin').value;
+        if(!lineaId) return;
+
+        limpiarMapa();
+        const lineaData = dataMD.lineas.find(l => l._id === lineaId);
+        const contenedor = document.getElementById('detalle-linea');
+        contenedor.innerHTML = `<h5>${lineaData.nombre}</h5>`;
+
+        let coordsLinea = [];
+        let campusVistos = new Set();
+
+        lineaData.trayecto.forEach((parada, index) => {
+            const estacion = dataMD.estaciones.find(e => e._id === parada.estacion_id);
+            if(estacion) {
+                coordsLinea.push([estacion.coordenadas.lat, estacion.coordenadas.lng]);
+                dataMD.campus.forEach(camp => {
+                    if(camp.estacionesCercanas.some(ec => ec.estacion_id === estacion._id)) {
+                        campusVistos.add(`${camp.universidad} (${camp.nombre})`);
+                    }
+                });
+                contenedor.innerHTML += `<div class="paso-est">${estacion.nombre}</div>`;
+            }
+        });
+
+        const poly = L.polyline(coordsLinea, { color: lineaData.color, weight: 5 }).addTo(map);
+        capasActivas.push(poly);
+
+        if(campusVistos.size > 0) {
+            contenedor.innerHTML += `<div class="info-card"><strong>🏛️ Campus en esta línea:</strong><br>${Array.from(campusVistos).join('<br>')}</div>`;
+        }
+        ajustarVista();
+    }
+
+    function limpiarMapa() {
+        capasActivas.forEach(c => map.removeLayer(c));
+        capasActivas = [];
+        document.getElementById('itinerario').innerHTML = "";
+        document.getElementById('detalle-linea').innerHTML = "";
+    }
+
+    function ajustarVista() {
+        if(capasActivas.length > 0) {
+            const group = new L.FeatureGroup(capasActivas);
+            map.fitBounds(group.getBounds(), {padding: [50, 50]});
+        }
+    }
+</script>
+</body>
+</html>
