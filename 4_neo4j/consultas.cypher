@@ -7,7 +7,7 @@ WITH
     "lin_6" AS idLinea
 
 // Encontramos las estaciones de la línea y ordenamos por el orden
-MATCH (linea:Linea {_id: idLinea})-[arista:tiene_estacion]->(est:Estacion)
+MERGE (linea:Linea {_id: idLinea})-[arista:tiene_estacion]->(est:Estacion)
 ORDER BY arista.orden ASC
 
 // Devolvemos el nombre de las estaciones y su orden
@@ -17,20 +17,14 @@ RETURN est.nombre as NombreEstacion, arista.orden as Orden;
 
 // Cogemos todas las aristas de tipo cercana y devolvemos el nombre de estaciones
 // y conteo de los campus cercanos a las estaciones
-MATCH (c:Campus)-[a:cercana]->(e:Estacion)
+MERGE (c:Campus)-[a:cercana]->(e:Estacion)
 RETURN e.nombre as NombreEstacion, COUNT(a) as NumCampusCercanos;
 
 // ENCONTRAR ESTACIONES CON RENFE Y CAMPUS cercana
 
 // Encontrar todas las estaciones que tienen cerca algún campus y con renfe
-MATCH (c:Campus)-[a:cercana]->(e:Estacion {tieneRenfe: true})
+MERGE (c:Campus)-[a:cercana]->(e:Estacion {tieneRenfe: true})
 RETURN e.nombre as NombreEstacion;
-
-// ENCONTRAR MÁSTERS DE UNA RAMA Y SUS CAMPUS
-WITH
-    "Ciencias" AS nombreRama
-MATCH (c:Campus)-[o:ofrece]->(m:Estudio {tipo: "MASTER", rama: nombreRama})
-RETURN c, o, m
 
 /* _____________________________________________ B. CONSULTAS SOBRE CAMPUS Y ESTUDIO  _____________________________________________*/
 
@@ -53,6 +47,20 @@ MATCH (c:Campus)-[:ofrece]->(e:Estudio)
 RETURN c.universidad AS Universidad, 
        count(CASE WHEN e.tipo = "MASTER" THEN 1 END) AS TotalMasters, 
        count(CASE WHEN e.tipo = "GRADO" THEN 1 END) AS TotalGrados
+
+// ENCONTRAR LOS CAMPUS QUE OFRECEN MÁSTERS DE UNA RAMA ESPECÍFICA
+
+// Creamos un alias para generalizar
+WITH
+    "Ingeniería" AS ramaNombre
+
+// Buscamos los campus que ofrecen estudios de tipo MASTER y la rama a buscar
+MATCH (c:Campus)-[:ofrece]->(e:Estudio {tipo: "MASTER", rama: ramaNombre})
+
+// Devolvemos el nombre del campus, la universidad y el nombre del master
+RETURN c.nombre as Campus,
+       c.universidad as Universidad,
+       e.nombre as Master;
 
 /* _____________________________________________ C. CONSULTAS DE RUTAS _____________________________________________*/
 
@@ -93,7 +101,7 @@ WITH
 
 // Buscamos la estacion de origen, los campus que ofrecen el estudio y las estaciones cercanas a dichos campus
 MATCH (estacionOrigen:Estacion {_id: estacionOrigenId})
-MATCH (campus:Campus)-[:ofrece]->(estudio:Estudio {_id: estudioBuscadoId})
+MATCH (campusConEstudio:Campus)-[:ofrece]->(estudio:Estudio {_id: estudioBuscadoId})
 MATCH (campus)-[:cercana]->(estacionDestino:Estacion)
 
 // Calulamos todos los shortest paths 
@@ -110,8 +118,8 @@ WITH campus, collect({nombreEstacion: estacionDestino.nombre, longitud: longitud
 
 // Resultado final
 RETURN
-    campus.nombre as NombreCampus,
     campus.universidad as Universidad,
+    campus.nombre as NombreCampus,
     mejorOpcion.nombreEstacion as EstacionDestino,
     mejorOpcion.longitud as LongitudCamino;
 
@@ -122,7 +130,7 @@ RETURN
 // Comparar las rutas por numero de cambios de linea y numero total de estaciones 
 
 // 1. Alias
-WITH "est_pradillo" as OrigenId, "est_pacifico" as DestinoId
+WITH "est_pradillo" as OrigenId, "est_getafe_central" as DestinoId
 
 // 2. Busqueda de caminos
 MATCH (Origen:Estacion {_id:OrigenId})
@@ -158,4 +166,3 @@ ORDER BY totalCambios ASC, totalEstaciones ASC
 LIMIT 5 // Limitador por si acaso
 
 
- 
