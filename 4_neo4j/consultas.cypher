@@ -1,6 +1,58 @@
 /* _____________________________________________ A. CONSULTAS ESTRUCTURALES  _____________________________________________*/
 
+// LISTAR LAS ESTACIONES DE UNA LÍNEA
+
+// Alias para generalizar
+WITH
+    "lin_6" AS idLinea
+
+// Encontramos las estaciones de la línea y ordenamos por el orden
+MATCH (linea:Linea {_id: idLinea})-[arista:tiene_estacion]->(est:Estacion)
+ORDER BY arista.orden ASC
+
+// Devolvemos el nombre de las estaciones y su orden
+RETURN est.nombre as NombreEstacion, arista.orden as Orden;
+
+// ENCONTRAR HUBS UNIVERSITARIOS
+
+// Cogemos todas las aristas de tipo cercana y devolvemos el nombre de estaciones
+// y conteo de los campus cercanos a las estaciones
+MATCH (c:Campus)-[a:cercana]->(e:Estacion)
+RETURN e.nombre as NombreEstacion, COUNT(a) as NumCampusCercanos;
+
+// ENCONTRAR ESTACIONES CON RENFE Y CAMPUS cercana
+
+// Encontrar todas las estaciones que tienen cerca algún campus y con renfe
+MATCH (c:Campus)-[a:cercana]->(e:Estacion {tieneRenfe: true})
+RETURN e.nombre as NombreEstacion;
+
+// ENCONTRAR MÁSTERS DE UNA RAMA Y SUS CAMPUS
+WITH
+    "Ciencias" AS nombreRama
+MATCH (c:Campus)-[o:ofrece]->(m:Estudio {tipo: "MASTER", rama: nombreRama})
+RETURN c, o, m
+
 /* _____________________________________________ B. CONSULTAS SOBRE CAMPUS Y ESTUDIO  _____________________________________________*/
+
+// ENCONTRAR CAMPUS CON CIERTOS GRADOS
+
+// Alias para generalizar
+WITH
+    "Grado en Ingeniería Informática" AS nombreGrado
+
+// Buscamos los campus que ofrezcan el grado y devolvemos sus nombre
+MATCH (c:Campus)-[o:ofrece]->(g:Estudio {nombre: nombreGrado})
+RETURN c.nombre as NombreCampus;
+
+// CALCULAR PARA CADA UNIVERSIDAD, NÚMERO DE GRADOS Y MASTER
+
+// Cogemos todos los campus que ofrecen estudios
+MATCH (c:Campus)-[:ofrece]->(e:Estudio)
+
+// Para cada universidad, contamos las aristas que ofrecen sus campus a másters y grados
+RETURN c.universidad AS Universidad, 
+       count(CASE WHEN e.tipo = "MASTER" THEN 1 END) AS TotalMasters, 
+       count(CASE WHEN e.tipo = "GRADO" THEN 1 END) AS TotalGrados
 
 /* _____________________________________________ C. CONSULTAS DE RUTAS _____________________________________________*/
 
