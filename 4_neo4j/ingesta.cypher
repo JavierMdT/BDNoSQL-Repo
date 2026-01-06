@@ -124,34 +124,35 @@ ON CREATE SET
 // ---------- ESTUDIOS ----------
 UNWIND [
     // GRADOS (10)
-    { _id: "estu_ing_datos", nombre: "Grado en Ciencia e Ingeniería de Datos", tipo: "GRADO" },
-    { _id: "estu_inf", nombre: "Grado en Ingeniería Informática", tipo: "GRADO" },
-    { _id: "estu_com_audiovisual", nombre: "Grado en Comunicación Audiovisual", tipo: "GRADO" },
-    { _id: "estu_medicina", nombre: "Grado en Medicina", tipo: "GRADO" },
-    { _id: "estu_fisicas", nombre: "Grado en Ciencias Físicas", tipo: "GRADO" },
-    { _id: "estu_ing_software", nombre: "Grado en Ingeniería del Software", tipo: "GRADO" },
-    { _id: "estu_derecho_eco", nombre: "Doble Grado Derecho y Economía", tipo: "GRADO" },
-    { _id: "estu_rrll", nombre: "Grado en Relaciones Laborales", tipo: "GRADO" },
-    { _id: "estu_matematicas", nombre: "Grado en Matemáticas", tipo: "GRADO" },
-    { _id: "estu_administracion", nombre: "Grado en Administración de Empresas", tipo: "GRADO" },
+    { _id: "estu_ing_datos", nombre: "Grado en Ciencia e Ingeniería de Datos", tipo: "GRADO", rama: "Ingeniería" },
+    { _id: "estu_inf", nombre: "Grado en Ingeniería Informática", tipo: "GRADO", rama: "Ingeniería" },
+    { _id: "estu_com_audiovisual", nombre: "Grado en Comunicación Audiovisual", tipo: "GRADO", rama: "Ciencias Sociales" },
+    { _id: "estu_medicina", nombre: "Grado en Medicina", tipo: "GRADO", rama: "Salud" },
+    { _id: "estu_fisicas", nombre: "Grado en Ciencias Físicas", tipo: "GRADO", rama: "Ciencias" },
+    { _id: "estu_ing_software", nombre: "Grado en Ingeniería del Software", tipo: "GRADO", rama: "Ingeniería" },
+    { _id: "estu_derecho_eco", nombre: "Doble Grado Derecho y Economía", tipo: "GRADO", rama: "Ciencias Sociales" },
+    { _id: "estu_rrll", nombre: "Grado en Relaciones Laborales", tipo: "GRADO", rama: "Ciencias Sociales" },
+    { _id: "estu_matematicas", nombre: "Grado en Matemáticas", tipo: "GRADO", rama: "Ciencias" },
+    { _id: "estu_administracion", nombre: "Grado en Administración de Empresas", tipo: "GRADO", rama: "Ciencias Sociales" },
 
     // MASTERS (5)
-    { _id: "estu_ciber", nombre: "Máster en Ciberseguridad", tipo: "MASTER" },
-    { _id: "estu_master_biotech", nombre: "Máster en Biotecnología", tipo: "MASTER" },
-    { _id: "estu_master_ia", nombre: "Máster en Inteligencia Artificial", tipo: "MASTER" },
-    { _id: "estu_master_rrhh", nombre: "Máster en Recursos Humanos", tipo: "MASTER" },
-    { _id: "estu_master_datos", nombre: "Máster en Big Data", tipo: "MASTER" },
+    { _id: "estu_ciber", nombre: "Máster en Ciberseguridad", tipo: "MASTER", rama: "Ingeniería" },
+    { _id: "estu_master_biotech", nombre: "Máster en Biotecnología", tipo: "MASTER", rama: "Ciencias" },
+    { _id: "estu_master_ia", nombre: "Máster en Inteligencia Artificial", tipo: "MASTER", rama: "Ingeniería" },
+    { _id: "estu_master_rrhh", nombre: "Máster en Recursos Humanos", tipo: "MASTER", rama: "Ciencias Sociales" },
+    { _id: "estu_master_datos", nombre: "Máster en Big Data", tipo: "MASTER", rama: "Ingeniería" },
 
     // DOCTORADOS (3)
-    { _id: "estu_doc_informatica", nombre: "Doctorado en Informática", tipo: "DOCTORADO" },
-    { _id: "estu_doc_ciencias", nombre: "Doctorado en Ciencias", tipo: "DOCTORADO" },
-    { _id: "estu_doc_empresa", nombre: "Doctorado en Economía y Empresa", tipo: "DOCTORADO" }
+    { _id: "estu_doc_informatica", nombre: "Doctorado en Informática", tipo: "DOCTORADO", rama: "Ingeniería" },
+    { _id: "estu_doc_ciencias", nombre: "Doctorado en Ciencias", tipo: "DOCTORADO", rama: "Ciencias" },
+    { _id: "estu_doc_empresa", nombre: "Doctorado en Economía y Empresa", tipo: "DOCTORADO", rama: "Ciencias Sociales" }
 ] AS estudios_unwind
 
 MERGE(e:Estudio {_id: estudios_unwind._id})
 ON CREATE SET
     e.nombre = estudios_unwind.nombre,
-    e.tipo = estudios_unwind.tipo;
+    e.tipo = estudios_unwind.tipo,
+    e.rama = estudios_unwind.rama;
 
 
 // -------- Linea --(tiene_estacion)-> Estacion --------
