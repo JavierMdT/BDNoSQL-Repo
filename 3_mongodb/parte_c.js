@@ -50,6 +50,7 @@ function buscarConexionGrado(nombreGrado, idEstacionOrigen) {
         _id: false,
         grado: "$nombre",
         campus: "$campus_info.nombre",
+        universidad: "$campus_info.universidad",
         estacion_campus: { $arrayElemAt: ["$estacion_info.nombre", 0] },
         lineas_directas: "$linea_info.nombre"
       }
