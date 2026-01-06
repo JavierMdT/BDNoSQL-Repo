@@ -1,5 +1,3 @@
-/* _______________1. CREACION DE LOS NODOS_______________*/
-
 // ---------- ESTACIONES ----------
 UNWIND [
   {_id: "est_moncloa", nombre: "Moncloa", tieneRenfe: false, zona: "A", coords: [40.435, -3.718]},
@@ -154,9 +152,6 @@ MERGE(e:Estudio {_id: estudios_unwind._id})
 ON CREATE SET
     e.nombre = estudios_unwind.nombre,
     e.tipo = estudios_unwind.tipo;
-
-/* _______________2. CREACION DE LAS ARISTAS_______________*/
-
 
 
 // -------- Linea --(tiene_estacion)-> Estacion --------

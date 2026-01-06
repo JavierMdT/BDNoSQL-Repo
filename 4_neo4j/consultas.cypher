@@ -93,7 +93,7 @@ WITH
 
 // Buscamos la estacion de origen, los campus que ofrecen el estudio y las estaciones cercanas a dichos campus
 MATCH (estacionOrigen:Estacion {_id: estacionOrigenId})
-MATCH (campusConEstudio:Campus)-[:ofrece]->(estudio:Estudio {_id: estudioBuscadoId})
+MATCH (campus:Campus)-[:ofrece]->(estudio:Estudio {_id: estudioBuscadoId})
 MATCH (campus)-[:cercana]->(estacionDestino:Estacion)
 
 // Calulamos todos los shortest paths 
@@ -110,8 +110,8 @@ WITH campus, collect({nombreEstacion: estacionDestino.nombre, longitud: longitud
 
 // Resultado final
 RETURN
-    campus.universidad as Universidad,
     campus.nombre as NombreCampus,
+    campus.universidad as Universidad,
     mejorOpcion.nombreEstacion as EstacionDestino,
     mejorOpcion.longitud as LongitudCamino;
 
@@ -122,7 +122,7 @@ RETURN
 // Comparar las rutas por numero de cambios de linea y numero total de estaciones 
 
 // 1. Alias
-WITH "est_pradillo" as OrigenId, "est_getafe_central" as DestinoId
+WITH "est_pradillo" as OrigenId, "est_pacifico" as DestinoId
 
 // 2. Busqueda de caminos
 MATCH (Origen:Estacion {_id:OrigenId})
@@ -158,3 +158,4 @@ ORDER BY totalCambios ASC, totalEstaciones ASC
 LIMIT 5 // Limitador por si acaso
 
 
+ 
